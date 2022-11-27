@@ -27,12 +27,11 @@ bounds = np.array([
 def processImage(bgr_img):
     processed_img = np.zeros((bgr_img.shape[0], bgr_img.shape[1], 3), dtype="uint8") # value to return
     for i in range(6): # loop through for all 6 colors
-        if i == 0 or i == 1 or i == 2:
-            mask = cv2.inRange(bgr_img, bounds[i*2], bounds[i*2+1]) # grab mask for specific range
-            kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (10, 10)) # kernel to clean up vertical divisions
-            mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel) # morphological open
-            color_mask = cv2.bitwise_and(bgr_img, bgr_img, mask=mask) # get color of mask in image
-            processed_img = cv2.bitwise_or(processed_img, color_mask) # add to or'ed image
+        mask = cv2.inRange(bgr_img, bounds[i*2], bounds[i*2+1]) # grab mask for specific range
+        kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (10, 10)) # kernel to clean up vertical divisions
+        mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel) # morphological open
+        color_mask = cv2.bitwise_and(bgr_img, bgr_img, mask=mask) # get color of mask in image
+        processed_img = cv2.bitwise_or(processed_img, color_mask) # add to or'ed image
     return processed_img # return processed image
 
 def main():
