@@ -23,6 +23,15 @@ bounds = np.array([
     BLUE_LOWER_BOUND, BLUE_UPPER_BOUND,
     WHITE_LOWER_BOUND, WHITE_UPPER_BOUND
 ])
+# solved cube
+solved = [
+    [[0,0,0],[0,0,0],[0,0,0]],
+    [[1,1,1],[1,1,1],[1,1,1]],
+    [[2,2,2],[2,2,2],[2,2,2]],
+    [[3,3,3],[3,3,3],[3,3,3]],
+    [[4,4,4],[4,4,4],[4,4,4]],
+    [[5,5,5],[5,5,5],[5,5,5]],
+]
 
 def processImage(bgr_img):
     processed_img = np.zeros((bgr_img.shape[0], bgr_img.shape[1], 3), dtype="uint8") # value to return
