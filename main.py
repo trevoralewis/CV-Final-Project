@@ -1,27 +1,14 @@
 import cv2
 import numpy as np
 
-# set boundaries
-RED_UPPER_BOUND = np.array([70, 80, 255])
-RED_LOWER_BOUND = np.array([0, 0, 140])
-ORANGE_UPPER_BOUND = np.array([70, 140, 255])
-ORANGE_LOWER_BOUND = np.array([0, 50, 150])
-YELLOW_UPPER_BOUND = np.array([100, 255, 255])
-YELLOW_LOWER_BOUND = np.array([50, 100, 100])
-GREEN_UPPER_BOUND = np.array([150, 255, 180])
-GREEN_LOWER_BOUND = np.array([50, 173, 100])
-BLUE_UPPER_BOUND = np.array([255, 200, 110])
-BLUE_LOWER_BOUND = np.array([150, 0, 0])
-WHITE_UPPER_BOUND = np.array([255, 255, 255])
-WHITE_LOWER_BOUND = np.array([170, 170, 170])
 # array of boundaries
 bounds = np.array([
-    RED_LOWER_BOUND, RED_UPPER_BOUND,
-    ORANGE_LOWER_BOUND, ORANGE_UPPER_BOUND,
-    YELLOW_LOWER_BOUND, YELLOW_UPPER_BOUND,
-    GREEN_LOWER_BOUND, GREEN_UPPER_BOUND,
-    BLUE_LOWER_BOUND, BLUE_UPPER_BOUND,
-    WHITE_LOWER_BOUND, WHITE_UPPER_BOUND
+    np.array([10, 0, 200]), np.array([30, 255, 255]), # white boundaries
+    np.array([35, 100, 0]), np.array([55, 255, 255]), # green boundaries
+    np.array([170, 100, 0]), np.array([190, 255, 255]), # red boundaries
+    np.array([75, 100, 0]), np.array([95, 255, 255]), # blue boundaries
+    np.array([0, 100, 0]), np.array([10, 255, 255]), # orange boundaries
+    np.array([15, 100, 0]), np.array([35, 255, 255]) # yellow boundaries
 ])
 # solved cube
 solved = [
@@ -35,8 +22,11 @@ solved = [
 
 def processImage(bgr_img):
     processed_img = np.zeros((bgr_img.shape[0], bgr_img.shape[1], 3), dtype="uint8") # value to return
+    hsv_img = cv2.cvtColor(bgr_img, cv2.COLOR_BGR2HSV)
     for i in range(6): # loop through for all 6 colors
-        mask = cv2.inRange(bgr_img, bounds[i*2], bounds[i*2+1]) # grab mask for specific range
+        if i != 0:
+            continue
+        mask = cv2.inRange(hsv_img, bounds[i*2], bounds[i*2+1]) # grab mask for specific range
         kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (10, 10)) # kernel to clean up vertical divisions
         mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel) # morphological open
         color_mask = cv2.bitwise_and(bgr_img, bgr_img, mask=mask) # get color of mask in image
