@@ -3,7 +3,7 @@ import numpy as np
 
 # array of boundaries
 bounds = np.array([
-    np.array([10, 0, 200]), np.array([40, 70, 255]), # white boundaries
+    np.array([0, 0, 0]), np.array([255, 100, 255]), # white boundaries
     np.array([35, 0, 0]), np.array([55, 255, 255]), # green boundaries
     np.array([170, 100, 0]), np.array([190, 255, 255]), # red boundaries
     np.array([75, 100, 0]), np.array([95, 255, 255]), # blue boundaries
@@ -24,6 +24,8 @@ def processImage(bgr_img):
     processed_img = np.zeros((bgr_img.shape[0], bgr_img.shape[1], 3), dtype="uint8") # value to return
     hsv_img = cv2.cvtColor(bgr_img, cv2.COLOR_BGR2HSV)
     for i in range(6): # loop through for all 6 colors
+        if i != 0:
+            continue
         mask = cv2.inRange(hsv_img, bounds[i*2], bounds[i*2+1]) # grab mask for specific range
         kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (10, 10)) # kernel to clean up vertical divisions
         mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel) # morphological open
