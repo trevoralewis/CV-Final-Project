@@ -72,7 +72,6 @@ def processImage(bgr_img):
     # draw thick contours on image
     edge_img = cv2.drawContours(edge_img, contours, -1, (255, 255, 255), 10, lineType=cv2.LINE_AA)
     # set up color processing
-    processed_img = np.zeros((bgr_img.shape[0], bgr_img.shape[1], 3), dtype="uint8") # value to return
     hsv_img = cv2.cvtColor(bgr_img, cv2.COLOR_BGR2HSV) # convert to hsv
     hsv_img = cv2.bitwise_and(hsv_img, hsv_img, mask=cv2.bitwise_not(edge_img)) # and with not'd edge img to remove edges from img
     for i in range(6): # loop through for all 6 colors
@@ -85,8 +84,6 @@ def processImage(bgr_img):
         kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (20, 20)) # kernel for centering masses
         mask = cv2.morphologyEx(mask, cv2.MORPH_ERODE, kernel) # morphological erosion
         num_labels, labels_img, stats, centroids = cv2.connectedComponentsWithStats(mask) # grab connected components in the mask
-        color_mask = cv2.bitwise_and(bgr_img, bgr_img, mask=mask) # get color of mask in image
-        processed_img = cv2.bitwise_or(processed_img, color_mask) # add to or'ed image
         # for every center in centroids
         for n in range(num_labels):
             xc, yc = centroids[n]
@@ -121,7 +118,8 @@ def processImage(bgr_img):
             elif xc > img_width * (5/9) and yc > img_height * (9/15):# if br
                 unsolved[face][2][2] = col
         face+=1 # add 1 to the face
-        print('Now on face ' + str(face))
+        if face < 6:
+            print('Now on face ' + str(face))
     centers = []
     return bgr_img # return processed image
 
@@ -135,7 +133,7 @@ def main():
         # grab frame
         success, bgr_img = feed.read()
         # exit initial loop once faces have been set
-        if face >= 5:
+        if face > 5:
             runAlgo(unsolved)
             break
         # simplify and label image of cube
@@ -146,7 +144,6 @@ def main():
         global key # make key updateable
         key = cv2.waitKey(1)
         if key == 27: # if key is ESC
-            print(unsolved)
             break
     # end of while loop
     feed.release() # release resources
@@ -165,7 +162,6 @@ def runAlgo(unsolved):
         global key # make key updateable
         key = cv2.waitKey(1)
         if key == 27: # if key is ESC
-            print(unsolved)
             break
 
 if __name__ == "__main__":
